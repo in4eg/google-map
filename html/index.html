@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<meta name="format-detection" content="telephone=no">
+
+	<link rel="stylesheet" href="css/bundle.min.css">
+
+</head>
+<body>
+
+	#=include includes/header.html
+
+	<main>
+
+		<button class="btn" data-lat="40.712784" data-lng="-74.005941">latlng2</button>
+
+		<div id="map-canvas" class="map"></div>
+
+		
+	</main>
+
+	#=include includes/footer.html
+
+
+	<!-- map -->
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpKZxw5kh0YQOr9lc_2iUE7wnqd8dQYQY&libraries=places"></script>
+	<script src="js/bundle.js"></script>
+
+</body>
+</html>
