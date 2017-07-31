@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Place searches</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      height: 100%;
+    }
+    .point {
+      font-size: 24px;
+      background-color: #ececec;
+      color: #000;
+      text-decoration: none;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="place">
+    <p>Найти по близости</p>
+    <a class="point" href="#place" data-category="school">Школы</a>
+    <a class="point" href="#place" data-category="bank">Банки</a>
+    <a class="point" href="#place" data-category="beauty_salon">Салоны красоты</a>
+    <a class="point" href="#place" data-category="restaurant">Рестораны</a>
+    <a class="point" href="#place" data-category="store">Магазины</a>
+    <a class="point" href="#place" data-category="library">Библиотеки</a>
+    <a class="point" href="#place" data-category="hospital">Клиники</a>
+    <a class="point" href="#place" data-category="gym">Фитнес центры</a>
+    <a class="point" href="#place" data-category="pharmacy">Аптеки</a>
+    <a class="point" href="#place" data-category="post_office">Почта</a>
+    <a class="point" href="#place" data-category="car_dealer">Автосалон</a>
+    <a class="point" href="#place" data-category="travel_agency">Туристическое агенство</a>
+
+
+  </div>
+  <div id="map"></div>
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+  <!-- map -->
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpKZxw5kh0YQOr9lc_2iUE7wnqd8dQYQY&libraries=places"></script>
+
+  <script>
+
+    $(document).ready(function () {
+      google.maps.event.addDomListener(window, 'load', init);
+    });
+
+    var mapPin = {
+      "center" : true,
+      "name" : "Miami Beach.Sunny Isles Beach 33131, FL, USA", 
+      "description" : "Miami Beach, FL, USA",
+      "address" : "Miami Beach, FL, USA",
+      "geometry" : {
+        "location" : {
+          "lat" : 25.763292138174872,
+          "lng" : -80.19253071900195
+        }
+      }
+    };
+
+    var myLatLng = {
+      lat: mapPin.geometry.location.lat,
+      lng: mapPin.geometry.location.lng
+    };
+    var map;
+    var markers = [];
+
+    function init() {
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15,
+        scrollwheel: false,
+        center: myLatLng
+      });
+      var markerImage = new google.maps.MarkerImage(
+        'map-marker.png'
+        );
+      var marker = new google.maps.Marker({
+        position: myLatLng,
+        icon: markerImage,
+        map: map
+      });
+
+      infowindow = new google.maps.InfoWindow();
+
+      var windowContent = mapPin.name;
+
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(windowContent);
+        infowindow.open(map, this);
+      });
+
+    }
+    function callback(results, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+        }
+      }
+
+    }
+    function createMarker(place) {
+
+      var marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location
+      });
+      markers.push(marker);
+
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(place.name);
+        infowindow.open(map, this);
+      });
+
+    }
+
+    $(".point").click(function(e) {
+      e.preventDefault();
+      $(this).addClass('active').siblings().removeClass('active');
+
+      setMapOnAll(map);
+
+      var category = $(this).attr("data-category");
+      var service = new google.maps.places.PlacesService(map);
+
+      service.nearbySearch({
+        location: myLatLng,
+        radius: 500,
+        types: [category]
+      }, callback);
+
+    });
+    function setMapOnAll(map) {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+    }
+
+  </script>
+</body>
+</html>
